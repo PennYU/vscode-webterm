@@ -27,20 +27,6 @@ export function getWebviewContent(webview: Webview, extensionUri: Uri, note: Not
   const termStyleUri = getUri(webview, extensionUri, ["node_modules", "xterm", "css", "xterm.css"]);
   const termUri = getUri(webview, extensionUri, ["node_modules", "xterm", "lib", "xterm.js"]);
 
-  const formattedTags = note.tags ? note.tags.join(", ") : null;
-
-  webview.onDidReceiveMessage((message) => {
-    const command = message.command;
-    switch (command) {
-      case "requestNoteData":
-        webview.postMessage({
-          command: "receiveDataInWebview",
-          payload: JSON.stringify(note),
-        });
-        break;
-    }
-  });
-
   return /*html*/ `
     <!DOCTYPE html>
     <html lang="en">
@@ -57,15 +43,51 @@ export function getWebviewContent(webview: Webview, extensionUri: Uri, note: Not
       <body id="webview-body">
         <header>
           <h1>${note.title}</h1>
-          <div id="tags-container"></div>
         </header>
-        <div id="terminal"></div>
-        <section id="notes-form">
-          <vscode-text-field id="title" value="${note.title}" placeholder="Enter a name">Title</vscode-text-field>
-          <vscode-text-area id="content"value="${note.content}" placeholder="Write your heart out, Shakespeare!" resize="vertical" rows=15>Note</vscode-text-area>
-          <vscode-text-field id="tags-input" value="${formattedTags}" placeholder="Add tags separated by commas">Tags</vscode-text-field>
-          <vscode-button id="submit-button">Save</vscode-button>
+        <section id="form-class">
+          <section id="session-form">
+            <span class="label-class">Host</span>
+            <vscode-text-field
+              id="host-field"
+              class="input-class"
+              size="20"
+              placeholder="IP or domain name. e.g. 127.0.0.1">
+            </vscode-text-field>
+            <span class="label-class">Port</span>
+            <vscode-text-field
+              id="port-field"
+              class="input-class"
+              size="5"
+              placeholder="Port. e.g. 22">
+            </vscode-text-field>
+            <span class="label-class">Username</span>
+            <vscode-text-field
+              id="username-field"
+              class="input-class"
+              size="20"
+              placeholder="Username">
+            </vscode-text-field>
+            <span class="label-class">Password</span>
+            <vscode-text-field
+              id="password-field"
+              class="input-class"
+              size="20"
+              type="Password"
+              placeholder="Password">
+            </vscode-text-field>
+            <vscode-button id="connect-button">Connect</vscode-button>
+          </section>
         </section>
+        <section id="form-class">
+          <div id="terminal"></div>
+          <vscode-button id="send-button">Run</vscode-button>
+          <vscode-text-area
+            id="commands-field"
+            placeholder="Write commmands to run"
+            resize="vertical"
+            rows=15>
+          </vscode-text-area>
+        </session>
       </body>
     </html>
   `;

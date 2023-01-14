@@ -1,23 +1,29 @@
+.label-class {
+  margin-right: 2px;
+}
+
+.input-class {
+  margin-right: 10px;
+}
+
 #webview-body {
   display: flex;
   flex-direction: column;
 }
 
-#notes-form {
+#form-class {
   display: grid;
   grid-auto-flow: row;
   grid-row-gap: 1.5rem;
 }
 
-#submit-button {
-  width: fit-content;
+#session-form {
+  display: flex;
+  align-items: center;
 }
 
-#tags-container {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: max-content;
-  grid-column-gap: 0.5rem;
+#submit-button {
+  width: fit-content;
 }
 
 @media screen and (min-width: 1024px) {

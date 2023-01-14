@@ -36,22 +36,18 @@ export function activate(context: ExtensionContext) {
 
     // If a panel is open and receives an update message, update the notes array and the panel title/html
     panel.webview.onDidReceiveMessage((message) => {
-      const command = message.command;
-      const note = message.note;
-      switch (command) {
-        case "updateNote":
-          const updatedNoteId = note.id;
-          const copyOfNotesArray = [...notes];
-          const matchingNoteIndex = copyOfNotesArray.findIndex((note) => note.id === updatedNoteId);
-          copyOfNotesArray[matchingNoteIndex] = note;
-          notes = copyOfNotesArray;
-          notepadDataProvider.refresh(notes);
-          panel
-            ? ((panel.title = note.title),
-              (panel.webview.html = getWebviewContent(panel.webview, context.extensionUri, note)))
-            : null;
+      console.log('message', message);
+      switch (message.on) {
+        case "connection":
+          const {host, port, username, password} = message;
+          panel?.webview.postMessage({ on: 'data', data: host });
+          panel?.webview.postMessage({ on: 'data', data: port });
+          panel?.webview.postMessage({ on: 'data', data: username });
+          panel?.webview.postMessage({ on: 'data', data: password });
           break;
-        case "input":
+        case "data":
+          const {data} = message;
+          panel?.webview.postMessage({ on: 'data', data }); 
           break;
       }
     });
